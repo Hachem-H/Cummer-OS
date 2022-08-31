@@ -68,6 +68,7 @@ pub fn main() {
                 let text = command.trim_start_matches("echo ");
                 println!("{}", text);
             }
+            "" => {}
             _ => println!("You idiot, the command \"{}\" doesn't exist, smh", command),
         }
     }
