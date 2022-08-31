@@ -94,13 +94,9 @@ impl Writer {
                     self.new_line();
                 }
 
-                let row = BUFFER_HEIGHT - 1;
-                let col = self.column_position;
-
-                let color_code = self.color_code;
-                self.buffer.chars[row][col].write(ScreenChar {
+                self.buffer.chars[BUFFER_HEIGHT - 1][self.column_position].write(ScreenChar {
                     ascii_character: byte,
-                    color_code,
+                    color_code: self.color_code,
                 });
                 self.column_position += 1;
             }
@@ -114,6 +110,14 @@ impl Writer {
                 _ => self.write_byte(0xfe),
             }
         }
+    }
+
+    pub fn delete_byte(&mut self) {
+        self.column_position -= 1;
+        self.buffer.chars[BUFFER_HEIGHT - 1][self.column_position].write(ScreenChar {
+            ascii_character: ' ' as u8,
+            color_code: self.color_code,
+        });
     }
 
     pub fn set_color(&mut self, color_code: ColorCode) {

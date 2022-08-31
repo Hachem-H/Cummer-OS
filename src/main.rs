@@ -1,16 +1,28 @@
 #![no_std]
 #![no_main]
 #![feature(abi_x86_interrupt)]
+#![allow(dead_code)]
 
 mod gdt;
 mod interrupts;
 mod kernel;
+mod keyboard;
 mod vga_buffer;
 
 pub fn hlt() -> ! {
     loop {
         x86_64::instructions::hlt();
     }
+}
+
+pub fn to_string(buffer: &[u8]) -> &str {
+    let mut string = core::str::from_utf8(buffer)
+        .unwrap()
+        .trim_matches(0 as char);
+    if string.ends_with('\n') {
+        string = string.trim_end();
+    }
+    string
 }
 
 fn init() {

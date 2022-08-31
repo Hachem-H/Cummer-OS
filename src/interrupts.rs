@@ -1,5 +1,7 @@
 use crate::gdt;
+use crate::keyboard;
 use crate::print;
+use crate::vga_buffer;
 
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
@@ -82,8 +84,36 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
     if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
         if let Some(key) = keyboard.process_keyevent(key_event) {
             match key {
-                DecodedKey::Unicode(character) => print!("{}", character),
-                DecodedKey::RawKey(key) => print!("{:?}", key),
+                DecodedKey::Unicode(character) => unsafe {
+                    if keyboard::IS_GET {
+                        if character != '\x08' {
+                            print!("{}", character);
+                        }
+
+                        keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX] = character as u8;
+                        keyboard::INPUT_BUFFER_INDEX += 1;
+
+                        match character {
+                            '\x0A' => {
+                                keyboard::IS_DONE = true;
+                                keyboard::IS_GET = false;
+                            }
+
+                            '\x08' => {
+                                if keyboard::INPUT_BUFFER_INDEX != 0 {
+                                    vga_buffer::WRITER.lock().delete_byte();
+
+                                    keyboard::INPUT_BUFFER_INDEX -= 1;
+                                    keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX] = 0;
+                                    keyboard::INPUT_BUFFER_INDEX -= 1;
+                                }
+                            }
+
+                            _ => {}
+                        }
+                    }
+                },
+                DecodedKey::RawKey(_) => {}
             }
         }
     }

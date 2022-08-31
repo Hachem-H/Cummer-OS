@@ -1,3 +1,5 @@
+use crate::keyboard;
+use crate::print;
 use crate::println;
 use crate::vga_buffer;
 
@@ -25,4 +27,10 @@ fn intro() {
 
 pub fn main() {
     intro();
+    loop {
+        let mut buffer: [u8; 32] = [0; 32];
+        print!("[GigaChad@CummerOS] -> ");
+        keyboard::get_input(&mut buffer);
+        println!("Got command: {}", crate::to_string(&buffer));
+    }
 }
