@@ -86,17 +86,28 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
             match key {
                 DecodedKey::Unicode(character) => unsafe {
                     if keyboard::IS_GET {
-                        if character != '\x08' {
+                        if character.is_ascii_alphanumeric()
+                            || character.is_ascii_punctuation()
+                            || character.is_ascii_graphic()
+                            || character == ' '
+                            || character == '\n'
+                        {
                             print!("{}", character);
                         }
-
-                        keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX] = character as u8;
-                        keyboard::INPUT_BUFFER_INDEX += 1;
 
                         match character {
                             '\x0A' => {
                                 keyboard::IS_DONE = true;
                                 keyboard::IS_GET = false;
+                            }
+
+                            '\x09' => {
+                                print!("    ");
+                                keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX + 0] = b' ';
+                                keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX + 1] = b' ';
+                                keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX + 2] = b' ';
+                                keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX + 3] = b' ';
+                                keyboard::INPUT_BUFFER_INDEX += 4;
                             }
 
                             '\x08' => {
@@ -105,11 +116,14 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
 
                                     keyboard::INPUT_BUFFER_INDEX -= 1;
                                     keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX] = 0;
-                                    keyboard::INPUT_BUFFER_INDEX -= 1;
                                 }
                             }
 
-                            _ => {}
+                            _ => {
+                                keyboard::INPUT_BUFFER[keyboard::INPUT_BUFFER_INDEX] =
+                                    character as u8;
+                                keyboard::INPUT_BUFFER_INDEX += 1;
+                            }
                         }
                     }
                 },
