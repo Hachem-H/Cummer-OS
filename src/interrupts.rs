@@ -126,6 +126,12 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
                             }
                         }
                     }
+
+                    if keyboard::IS_WAIT {
+                        if character == '\n' {
+                            keyboard::IS_WAIT = false;
+                        }
+                    }
                 },
                 DecodedKey::RawKey(_) => {}
             }

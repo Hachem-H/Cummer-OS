@@ -6,6 +6,7 @@ mod gdt;
 mod interrupts;
 mod kernel;
 mod keyboard;
+mod tictactoe;
 mod vga_buffer;
 
 pub fn hlt() -> ! {

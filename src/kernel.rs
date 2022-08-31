@@ -1,6 +1,7 @@
 use crate::keyboard;
 use crate::print;
 use crate::println;
+use crate::tictactoe;
 use crate::vga_buffer;
 
 #[rustfmt::skip]
@@ -48,19 +49,21 @@ pub fn main() {
     intro();
 
     loop {
-        let mut input_buffer: [u8; 32] = [0; 32];
+        let mut input_buffer: [u8; 256] = [0; 256];
         print!("[GigaChad@CummerOS] -> ");
         keyboard::get_input(&mut input_buffer);
         let command = crate::to_string(&input_buffer);
 
         match command {
-            "tictactoe" => unimplemented!(),
+            "tictactoe" => tictactoe::run(),
 
             "poweroff" | "commit die" => unimplemented!(),
             "reboot" | "resurect" => unimplemented!(),
 
             "help" | "?" => help(),
             "intro" => intro(),
+            "clear" => vga_buffer::WRITER.lock().clear_screen(),
+
             "cd" | "ls" | "rm" | "mkdir" | "touch" | "rmdir" => {
                 println!("BRO, THERE IS NO FILE SYSTEM WHAT ARE YOU TRYING TO DO?!")
             }
