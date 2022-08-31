@@ -25,12 +25,50 @@ fn intro() {
     vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::White, vga_buffer::Color::Black));
 }
 
+#[rustfmt::skip]
+fn help() {
+    println!("Imagine needing help, what a noob, cant even use an OS which was never used");
+    println!("before I will be nice and not tell you to go to the arch wiki like a pleb.");
+    println!("here are the commands");
+    println!("");
+    println!("    - help/?: This is quite obvious i think.");
+    println!("    - intro: if for some reason you didnt read it the first time.");
+    println!("    - poweroff/commit die: these are obvious wtf.");
+    println!("    - reboot/resurect: okay this is getting annoying.");
+    println!("");
+    println!("    - cd/ls/rmdir/mkdir/touch/etc... dont exist, cause there is no filesystem");
+    println!("                                     cut me some slack took me a week.");
+    println!("    - echo [phrase]: prints back the phrase if thats your jazz");
+    println!("We got dem games");
+    println!("    - tictactoe: every project of mine should have this oml.");
+    println!("");
+}
+
 pub fn main() {
     intro();
+
     loop {
-        let mut buffer: [u8; 32] = [0; 32];
+        let mut input_buffer: [u8; 32] = [0; 32];
         print!("[GigaChad@CummerOS] -> ");
-        keyboard::get_input(&mut buffer);
-        println!("Got command: {}", crate::to_string(&buffer));
+        keyboard::get_input(&mut input_buffer);
+        let command = crate::to_string(&input_buffer);
+
+        match command {
+            "tictactoe" => unimplemented!(),
+
+            "poweroff" | "commit die" => unimplemented!(),
+            "reboot" | "resurect" => unimplemented!(),
+
+            "help" | "?" => help(),
+            "intro" => intro(),
+            "cd" | "ls" | "rm" | "mkdir" | "touch" | "rmdir" => {
+                println!("BRO, THERE IS NO FILE SYSTEM WHAT ARE YOU TRYING TO DO?!")
+            }
+            command if command.starts_with("echo ") => {
+                let text = command.trim_start_matches("echo ");
+                println!("{}", text);
+            }
+            _ => println!("You idiot, the command \"{}\" doesn't exist, smh", command),
+        }
     }
 }

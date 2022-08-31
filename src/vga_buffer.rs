@@ -101,6 +101,7 @@ impl Writer {
                 self.column_position += 1;
             }
         }
+        self.update_cursor();
     }
 
     pub fn write_string(&mut self, string: &str) {
@@ -118,6 +119,7 @@ impl Writer {
             ascii_character: ' ' as u8,
             color_code: self.color_code,
         });
+        self.update_cursor();
     }
 
     pub fn set_color(&mut self, color_code: ColorCode) {
@@ -133,6 +135,7 @@ impl Writer {
         }
         self.clear_row(BUFFER_HEIGHT - 1);
         self.column_position = 0;
+        self.update_cursor();
     }
 
     fn clear_row(&mut self, row: usize) {
@@ -143,6 +146,22 @@ impl Writer {
 
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank);
+        }
+
+        self.update_cursor();
+    }
+
+    fn update_cursor(&mut self) {
+        use x86_64::instructions::port::Port;
+        let offset = (BUFFER_HEIGHT - 1) * BUFFER_WIDTH + self.column_position;
+
+        unsafe {
+            let mut port1 = Port::new(0x3D4);
+            let mut port2 = Port::new(0x3D5);
+            port1.write(14u8);
+            port2.write((offset >> 8) as u8);
+            port1.write(15u8);
+            port2.write((offset & 0xFF) as u8);
         }
     }
 }
