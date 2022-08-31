@@ -3,7 +3,8 @@ A joke operating system dedicated to one of my friends, originally started with 
 And yes, this OS should work on real hardware (tested).
 
 **Requirements:**
-- `rust` (`with the nightly toolchain`)
+- `rust` (with the `nightly toolchain`)
+- `rust bootimage`; Installed with `cargo install bootimage`
 - `qemu`
 
 ## Running/Emulating
