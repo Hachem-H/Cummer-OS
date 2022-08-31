@@ -37,20 +37,40 @@ fn help() {
     println!("    - poweroff/commit die: these are obvious wtf.");
     println!("    - reboot/resurect: okay this is getting annoying.");
     println!("");
-    println!("    - cd/ls/rmdir/mkdir/touch/etc... dont exist, cause there is no filesystem");
-    println!("                                     cut me some slack took me a week.");
+    println!("    - cd/rmdir/mkdir/touch/etc... dont exist, cause there is no real");
+    println!("                                  filesystem, only a virtual one. Cut me");
+    println!("                                  some slack, this entire thing took me a week.");
     println!("    - echo [phrase]: prints back the phrase if thats your jazz");
+    println!("    - cat [file]: prints the data in a file");
+    println!("    - ls: shows all file");
     println!("We got dem games");
     println!("    - tictactoe: every project of mine should have this oml.");
     println!("");
 }
 
-pub fn main() {
-    intro();
+#[rustfmt::skip]
+fn print_prompt() {
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::Yellow,    vga_buffer::Color::Black));
+    print!("[");
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::White,     vga_buffer::Color::Black));
+    print!("GigaChad");
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::LightBlue, vga_buffer::Color::Black));
+    print!("@");
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::LightCyan, vga_buffer::Color::Black));
+    print!("CummerOS");
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::Yellow,    vga_buffer::Color::Black));
+    print!("]");
+    vga_buffer::WRITER.lock().set_color(vga_buffer::ColorCode::new(vga_buffer::Color::White,     vga_buffer::Color::Black));
+    print!(" -> ");
+}
 
+pub fn main() {
+    let vfs = crate::vfs::VFS.lock();
+
+    intro();
     loop {
         let mut input_buffer: [u8; 256] = [0; 256];
-        print!("[GigaChad@CummerOS] -> ");
+        print_prompt();
         keyboard::get_input(&mut input_buffer);
         let command = crate::to_string(&input_buffer);
 
@@ -64,13 +84,35 @@ pub fn main() {
             "intro" => intro(),
             "clear" => vga_buffer::WRITER.lock().clear_screen(),
 
-            "cd" | "ls" | "rm" | "mkdir" | "touch" | "rmdir" => {
-                println!("BRO, THERE IS NO FILE SYSTEM WHAT ARE YOU TRYING TO DO?!")
+            "ls" => {
+                for file in vfs.files {
+                    println!("{} ", file.0);
+                }
             }
+
+            command if command.starts_with("cat ") => {
+                let file = command.trim_start_matches("cat ");
+                let data = vfs.get(file);
+                match data {
+                    Some(data) => println!("{}", data),
+                    None => println!("What file is that, it doesnt exist lmfao"),
+                }
+            }
+
+            command if command.starts_with("cat ") => {
+                let file = command.trim_start_matches("cat ");
+                let data = vfs.get(file);
+                match data {
+                    Some(data) => println!("{}", data),
+                    None => println!("What file is that, it doesnt exist lmfao"),
+                }
+            }
+
             command if command.starts_with("echo ") => {
                 let text = command.trim_start_matches("echo ");
                 println!("{}", text);
             }
+
             "" => {}
             _ => println!("You idiot, the command \"{}\" doesn't exist, smh", command),
         }

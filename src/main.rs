@@ -2,11 +2,13 @@
 #![no_main]
 #![feature(abi_x86_interrupt)]
 
+mod files;
 mod gdt;
 mod interrupts;
 mod kernel;
 mod keyboard;
 mod tictactoe;
+mod vfs;
 mod vga_buffer;
 
 pub fn hlt() -> ! {
