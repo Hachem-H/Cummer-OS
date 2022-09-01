@@ -85,8 +85,14 @@ pub fn main() {
             "text adventure" => text_adventure::run(),
             "number guesser" => number_guesser::run(),
 
-            "poweroff" | "commit die" => unimplemented!(),
-            "reboot" | "resurect" => unimplemented!(),
+            "poweroff" | "commit die" | "reboot" | "resurect" => {
+                use x86_64::instructions::port::Port;
+
+                unsafe {
+                    let mut port = Port::new(0xf4);
+                    port.write(0x10 as u32);
+                }
+            }
 
             "help" | "?" => help(),
             "intro" => intro(),
