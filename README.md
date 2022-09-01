@@ -1,5 +1,5 @@
 # Cummer OS
-A joke operating system dedicated to one of my friends, originally started with my custom toolkit [OS-TK](https://github.com/Hachem-H/OS-TK.back), but it quickly became a hassle since I had to manage creating a product and a gift at the same time (with a limited time). So with 2 weeks to spare, I decided to rewrite the entire kernel in [rust](https://rust-lang.org) since a lot of the work has already been done in packaged, (IDT/GDT, boot loaders, ports, ...).
+A joke operating system dedicated to one of my friends, originally started with my custom toolkit [OS-TK](https://github.com/Hachem-H/OS-TK.bak), but it quickly became a hassle since I had to manage creating a product and a gift at the same time (with a limited time). So with 2 weeks to spare, I decided to rewrite the entire kernel in [rust](https://rust-lang.org) since a lot of the work has already been done in packaged, (IDT/GDT, boot loaders, ports, ...).
 And yes, this OS should work on real hardware (tested).
 
 It has a variety of features, such as a  virtual file system to store kernel loaded files `(VFS)`, a VGA and keyboard driver, and more importantly, three simple games for you to enjoy (`TicTacToe`, `A random number guesser` and `A simple text adventure`) and even a full command line shell allowing you to interact with the shell.
