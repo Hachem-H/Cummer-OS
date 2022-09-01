@@ -15,6 +15,7 @@ pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
 pub static PICS: Mutex<ChainedPics> =
     Mutex::new(unsafe { ChainedPics::new(PIC_1_OFFSET, PIC_2_OFFSET) });
+pub static CLOCK_COUNTER: Mutex<u64> = Mutex::new(0);
 
 lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
@@ -62,6 +63,8 @@ extern "x86-interrupt" fn double_fault_handler(
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
     unsafe {
+        *CLOCK_COUNTER.lock() += 1;
+
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Timer.as_u8());
     }

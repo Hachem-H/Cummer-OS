@@ -46,8 +46,8 @@ fn get_input() {
             let mut choices = choice.split_at(1);
             choices.1 = choices.1.trim_start();
 
-            let x_temp = usize::from_str_radix(choices.0, 9);
-            let y_temp = usize::from_str_radix(choices.1, 9);
+            let x_temp = usize::from_str_radix(choices.0, 10);
+            let y_temp = usize::from_str_radix(choices.1, 10);
 
             if x_temp.is_ok() && y_temp.is_ok() {
                 x = x_temp.unwrap();

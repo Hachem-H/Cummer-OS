@@ -1,8 +1,12 @@
-use crate::keyboard;
 use crate::print;
 use crate::println;
-use crate::tictactoe;
+
+use crate::keyboard;
 use crate::vga_buffer;
+
+use crate::number_guesser;
+use crate::text_adventure;
+use crate::tictactoe;
 
 #[rustfmt::skip]
 fn intro() {
@@ -45,6 +49,8 @@ fn help() {
     println!("    - ls: shows all file");
     println!("We got dem games");
     println!("    - tictactoe: every project of mine should have this oml.");
+    println!("    - text adventure: a meme from when you were learning python.");
+    println!("    - number guesser: okay come on you should know what this does.");
     println!("");
 }
 
@@ -76,6 +82,8 @@ pub fn main() {
 
         match command {
             "tictactoe" => tictactoe::run(),
+            "text adventure" => text_adventure::run(),
+            "number guesser" => number_guesser::run(),
 
             "poweroff" | "commit die" => unimplemented!(),
             "reboot" | "resurect" => unimplemented!(),

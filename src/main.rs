@@ -6,10 +6,14 @@ mod files;
 mod gdt;
 mod interrupts;
 mod kernel;
-mod keyboard;
-mod tictactoe;
 mod vfs;
+
+mod keyboard;
 mod vga_buffer;
+
+mod number_guesser;
+mod text_adventure;
+mod tictactoe;
 
 pub fn hlt() -> ! {
     loop {

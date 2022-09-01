@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rand = { version = "0.8.3", features = ["small_rng"], default-features = false }
 pc-keyboard = "0.5.0"
 bootloader = "0.9.8"
 pic8259 = "0.10.1"
