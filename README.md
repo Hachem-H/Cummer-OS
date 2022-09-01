@@ -12,6 +12,7 @@ To first get started, make sure you have rust installed from the [rust website](
 
 ```sh
 $ rustup toolchain install nightly
+$ rustup target add thumbv7em-none-eabihf
 $ cargo install bootimage
 ```
 
